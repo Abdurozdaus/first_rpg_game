@@ -10,8 +10,11 @@ class Player(pg.sprite.Sprite):
         """ответственносить за переменные"""
         super().__init__()
 
-        self.sprite_sheet = SpriteSheet(sprite_sheet_path)
-        self.image = self.sprite_sheet.get_image(0, 0, 32, 32)
+        # self.sprite_sheet = SpriteSheet(sprite_sheet_path)
+        # self.image = self.sprite_sheet.get_image(0, 0, 32, 32)
+        sprite_sheet=SpriteSheet(sprite_sheet_path, 2)
+        self._loadimage(sprite_sheet)
+        self.image=self.walk_right[0]
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
@@ -34,3 +37,16 @@ class Player(pg.sprite.Sprite):
             self.velocity.x=0
         self.velocity*=Player.speed
         self.rect.center+=self.velocity
+
+    def _loadimage(self, sheet):
+        self.walk_right=[]
+        self.walk_down=[]
+        self.walk_left=[]
+        self.walk_up=[]
+        w,h=sheet.w//4, sheet.h//4
+        for i in range(0,w*4,w):
+            self.walk_right.append(sheet.get_image(i, h*2, w, h))
+            self.walk_down.append(sheet.get_image(i, 0, w, h))
+            self.walk_left.append(sheet.get_image(i, h, w, h))
+            self.walk_up.append(sheet.get_image(i, h * 3, w, h))
+
