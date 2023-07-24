@@ -17,22 +17,28 @@ class Player(pg.sprite.Sprite):
         self.image=self.walk_right[0]
         self.rect = self.image.get_rect()
         self.rect.center = pos
+        self.cycle_len=4
+        self.last_update=0
+        self.frame=0
+        self.velocity=Vector2(0,0)
 
     def update(self):
         """обновляет текущую позицию"""
         self.moove()
+        self.animation_ciycle()
+
     def moove(self):
         """движение по определенному вектору"""
-        self.velocity=Vector2(0,0)
+        self.velocity.update(0,0)
         keys=pg.key.get_pressed()
         if keys[pg.K_a]:
-            self.rect.x-=3
+            self.rect.x-=2
         if keys[pg.K_w]:
-            self.rect.y-=3
+            self.rect.y-=2
         if keys[pg.K_s]:
-            self.rect.y+=3
+            self.rect.y+=2
         if keys[pg.K_d]:
-            self.rect.x+=3
+            self.rect.x+=2
         if self.velocity.length()>1:
             self.velocity.x=0
         self.velocity*=Player.speed
@@ -49,4 +55,22 @@ class Player(pg.sprite.Sprite):
             self.walk_down.append(sheet.get_image(i, 0, w, h))
             self.walk_left.append(sheet.get_image(i, h, w, h))
             self.walk_up.append(sheet.get_image(i, h * 3, w, h))
+
+    def animation_ciycle(self, frame_len=100):
+        """отвечает за анимацию передвижения игрока"""
+        now=pg.time.get_ticks()
+        if now -self.last_update>frame_len and self.velocity.length()>0:
+            self.last_update=now
+            if self.velocity_y>0:
+                self.animation_cycle=self.walk_down
+            elif self.velocity_y<0:
+                self.animation_cycle=self.walk_up
+            elif self.velocity_x>0:
+                self.animation_cycle=self.walk_right
+            elif self.velocity_x<0:
+                self.animation_cycle=self.walk_left
+            self.frame=(self.frame+1)%self.cycle_len
+            self.image=self.animation_cycle[self.frame]
+
+
 
