@@ -71,6 +71,7 @@ class Player(pg.sprite.Sprite):
                 self.animation_cycle=self.walk_left
             self.frame=(self.frame+1)%self.cycle_len
             self.image=self.animation_cycle[self.frame]
+            # f
 
 
 
